@@ -1,9 +1,5 @@
 # Product Requirements Document (PRD): On-Chain Order-Book Market Maker Settlement System
 
-Absolutely! Here's a **Product Requirements Document (PRD)** outline for building an **on-chain order-book market maker settlement system**, inspired by Filament's architecture. I've woven in key elements of Filament's API—like signature-based order submission, order types, collateral updates, and WebSocket feeds—so you get a solid blueprint. Each Filament insight is cited from its official docs for clarity.([docs.filament.finance](https://docs.filament.finance/market-makers/filament-api?utm_source=chatgpt.com))
-
----
-
 ## 1. Overview
 
 **Objective**:
