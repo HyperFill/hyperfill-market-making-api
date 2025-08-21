@@ -1,98 +1,109 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# On-Chain Order-Book Market Maker Settlement System
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This project is a NestJS-based server for an on-chain order-book market maker (MM) settlement system. It provides a RESTful API for market makers to submit, amend, and cancel orders, and a WebSocket interface for real-time data feeds. All operations are authenticated using cryptographic signatures.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Project Overview
 
-## Description
+The system is designed to allow market makers to interact with an order book through a secure and transparent API. The core features are modeled after platforms like Filament, focusing on signature-based authentication and on-chain settlement.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+### Core Features
+- **Signature-based Authentication:** Every API request that involves a state change (e.g., placing an order, canceling an order) must be signed with the market maker's private key. The server verifies the signature to ensure the authenticity of the request.
+- **RESTful API:** A comprehensive API for managing orders, including placing limit and market orders, canceling orders, and managing collateral.
+- **WebSocket Feeds:** Real-time data feeds for the order book and live prices, allowing clients to stay up-to-date with market changes.
+- **On-Chain Settlement (Mocked):** The system is designed to settle trades on-chain. In the current implementation, this is mocked by a service that logs the settlement details.
 
-## Project setup
+## Project Structure
 
-```bash
-$ npm install
+The project is a standard NestJS application with a modular structure. The main components are located in the `src` directory:
+
+```
+src
+├── app.module.ts
+├── main.ts
+├── exchange/
+│   ├── dto/
+│   ├── settlement/
+│   ├── exchange.controller.ts
+│   ├── exchange.module.ts
+│   └── exchange.service.ts
+├── shared/
+│   ├── crypto/
+│   └── shared.module.ts
+└── websocket/
+    ├── order-book/
+    ├── live-feed/
+    └── websocket.module.ts
 ```
 
-## Compile and run the project
+- **`main.ts`**: The entry point of the application.
+- **`app.module.ts`**: The root module of the application.
+- **`exchange/`**: This module contains all the logic related to the RESTful API for order management.
+  - **`dto/`**: Data Transfer Objects (DTOs) used for validating the request bodies of the API endpoints.
+  - **`settlement/`**: Contains the mock settlement service.
+  - **`exchange.controller.ts`**: The controller that handles the incoming HTTP requests for the `/exchange` route and its sub-routes.
+  - **`exchange.service.ts`**: The service that contains the business logic for order management.
+- **`shared/`**: This module contains shared utilities that can be used across different modules.
+  - **`crypto/`**: Contains the `CryptoService` for handling cryptographic signature verification.
+- **`websocket/`**: This module contains the WebSocket gateways for real-time data feeds.
+  - **`order-book/`**: The gateway for the order book feed.
+  - **`live-feed/`**: The gateway for the live price feed.
+
+
+## How It Works
+
+1.  **Order Submission:** A market maker creates an order and signs the unique `orderId` with their private key.
+2.  **API Request:** The market maker sends a `POST` request to the appropriate API endpoint (e.g., `/exchange`) with the order details, `orderId`, and the `signature`.
+3.  **Signature Verification:** The server receives the request and uses the `CryptoService` to verify the signature against the provided `orderId` and the market maker's public address (`account`).
+4.  **Order Processing:** If the signature is valid, the `ExchangeService` processes the order. In the current implementation, it sends the order to the mock `SettlementService`.
+5.  **WebSocket Broadcast:** The WebSocket gateways periodically broadcast mock data for the order book and live prices to all connected clients.
+
+## Getting Started
+
+### Prerequisites
+- Node.js (v16 or higher)
+- npm
+
+### Installation
+
+1.  Clone the repository:
+    ```bash
+    git clone <repository-url>
+    ```
+2.  Navigate to the `orderbook-mm-server` directory:
+    ```bash
+    cd orderbook-mm-server
+    ```
+3.  Install the dependencies:
+    ```bash
+    npm install
+    ```
+
+### Running the Application
+
+To run the application in development mode with watch support:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm run start:dev
 ```
 
-## Run tests
+The server will start on `http://localhost:3000`.
 
-```bash
-# unit tests
-$ npm run test
+## API Endpoints
 
-# e2e tests
-$ npm run test:e2e
+The following API endpoints are available:
 
-# test coverage
-$ npm run test:cov
-```
+- `POST /exchange`: Place a new order.
+- `POST /exchange/cancel`: Cancel an existing order.
+- `POST /exchange/update-margin`: Update the margin for a position.
+- `POST /exchange/update-tpsl`: Update the take-profit or stop-loss for a position.
 
-## Deployment
+*For detailed information about the request and response formats, please refer to the Swagger API documentation (coming soon).*
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+## WebSocket Feeds
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+The following WebSocket namespaces are available:
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+- `/ws/order-book`: Provides real-time updates to the order book.
+- `/ws/live-feed`: Provides a real-time feed of market prices.
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+Clients can connect to these namespaces to receive the data streams.
