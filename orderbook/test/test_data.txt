@@ -1,0 +1,8 @@
+Enter RPC URL (e.g., https://eth-mainnet.alchemyapi.io/v2/YOUR-API-KEY): https://evm-rpc-testnet.sei-apis.com
+Enter your private key: b8e09a5447e006e9163b470921991c245683b2cb2ebd6eefcfae5e7d73d574d6 "agent"
+Enter your private key: 7e83358b55700eb111b17735faf8f3b4740c962cb3dc7ccfb75beb1171f7f596 "main"
+
+Enter token contract address: 0x54099052D0e04a5CF24e4c7c82eA693Fb25E0Bed[USDT]
+0x8eFcF5c2DDDA6C1A63D8395965Ca6c0609CE32D5[SEI]
+Enter spender contract address: 0xF14dbF48b727AD8346dD8Fa6C0FC42FCb81FF115
+Enter amount to approve (in tokens, e.g., 100): 1000
