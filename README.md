@@ -7,7 +7,7 @@
 ╚═╝  ╚═╝   ╚═╝   ╚═╝     ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝╚══════╝
 
           First AI Market Making Vault on SEI Network 
-              "We make money while you sleep" - The HyperFill Team
+             
 ```
 
 
